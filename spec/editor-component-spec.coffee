@@ -1563,30 +1563,36 @@ describe "EditorComponent", ->
         expect(horizontalScrollbarNode.scrollLeft).toBe 0
 
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: -5, wheelDeltaY: -10))
+        runSetImmediateCallbacks()
         expect(verticalScrollbarNode.scrollTop).toBe 10
         expect(horizontalScrollbarNode.scrollLeft).toBe 0
 
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: -15, wheelDeltaY: -5))
+        runSetImmediateCallbacks()
         expect(verticalScrollbarNode.scrollTop).toBe 10
         expect(horizontalScrollbarNode.scrollLeft).toBe 15
 
       it "updates the scrollLeft or scrollTop according to the scroll sensitivity", ->
         atom.config.set('editor.scrollSensitivity', 50)
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: -5, wheelDeltaY: -10))
+        runSetImmediateCallbacks()
         expect(horizontalScrollbarNode.scrollLeft).toBe 0
 
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: -15, wheelDeltaY: -5))
+        runSetImmediateCallbacks()
         expect(verticalScrollbarNode.scrollTop).toBe 5
         expect(horizontalScrollbarNode.scrollLeft).toBe 7
 
       it "uses the previous scrollSensitivity when the value is not an int", ->
         atom.config.set('editor.scrollSensitivity', 'nope')
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: -10))
+        runSetImmediateCallbacks()
         expect(verticalScrollbarNode.scrollTop).toBe 10
 
       it "parses negative scrollSensitivity values as positive", ->
         atom.config.set('editor.scrollSensitivity', -50)
         componentNode.dispatchEvent(new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: -10))
+        runSetImmediateCallbacks()
         expect(verticalScrollbarNode.scrollTop).toBe 5
 
     describe "when the mousewheel event's target is a line", ->
@@ -1599,6 +1605,7 @@ describe "EditorComponent", ->
         wheelEvent = new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: -500)
         Object.defineProperty(wheelEvent, 'target', get: -> lineNode)
         componentNode.dispatchEvent(wheelEvent)
+        runSetImmediateCallbacks()
 
         expect(componentNode.contains(lineNode)).toBe true
 
@@ -1611,6 +1618,7 @@ describe "EditorComponent", ->
         wheelEvent = new WheelEvent('mousewheel', wheelDeltaX: 10, wheelDeltaY: 0)
         Object.defineProperty(wheelEvent, 'target', get: -> lineNode)
         componentNode.dispatchEvent(wheelEvent)
+        runSetImmediateCallbacks()
 
         expect(component.mouseWheelScreenRow).toBe null
 
@@ -1623,6 +1631,7 @@ describe "EditorComponent", ->
         wheelEvent = new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: 10)
         Object.defineProperty(wheelEvent, 'target', get: -> lineNode)
         componentNode.dispatchEvent(wheelEvent)
+        runSetImmediateCallbacks()
 
         expect(editor.getScrollTop()).toBe 0
 
@@ -1639,6 +1648,7 @@ describe "EditorComponent", ->
         wheelEvent = new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: 100) # goes nowhere, we're already at scrollTop 0
         Object.defineProperty(wheelEvent, 'target', get: -> lineNode)
         componentNode.dispatchEvent(wheelEvent)
+        runSetImmediateCallbacks()
 
         expect(component.mouseWheelScreenRow).toBe 0
         editor.insertText("hello")
@@ -1655,6 +1665,7 @@ describe "EditorComponent", ->
         wheelEvent = new WheelEvent('mousewheel', wheelDeltaX: 0, wheelDeltaY: -500)
         Object.defineProperty(wheelEvent, 'target', get: -> lineNumberNode)
         componentNode.dispatchEvent(wheelEvent)
+        runSetImmediateCallbacks()
 
         expect(componentNode.contains(lineNumberNode)).toBe true
 
